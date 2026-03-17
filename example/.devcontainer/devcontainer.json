@@ -1,0 +1,39 @@
+{
+    "name": "Atari MiNT ELF Toolchain",
+    "image": "atari-mintelf-toolchain:latest",
+
+    "mounts": [
+        "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind"
+    ],
+
+    "remoteEnv": {
+        "DISPLAY": "${localEnv:DISPLAY}",
+        "WAYLAND_DISPLAY": "${localEnv:WAYLAND_DISPLAY}",
+        "XDG_RUNTIME_DIR": "${localEnv:XDG_RUNTIME_DIR}"
+    },
+
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-vscode.cpptools",
+                "ms-vscode.makefile-tools"
+            ],
+            "settings": {
+                "C_Cpp.default.configurationProvider": "",
+                "C_Cpp.default.compilerPath": "/opt/cross-mintelf/bin/m68k-atari-mintelf-gcc",
+                "C_Cpp.default.includePath": [
+                    "${workspaceFolder}",
+                    "/opt/cross-mintelf/libcmini/include",
+                    "/opt/cross-mintelf/m68k-atari-mintelf/sys-root/usr/include",
+                    "/opt/cross-mintelf/lib/gcc/m68k-atari-mintelf/13.2.0/include",
+                    "/opt/cross-mintelf/lib/gcc/m68k-atari-mintelf/13.2.0/include-fixed"
+                ],
+                "C_Cpp.default.defines": ["__MINT__", "__M68K__"],
+                "C_Cpp.default.cStandard": "c99",
+                "C_Cpp.default.intelliSenseMode": "linux-gcc-x86",
+                "makefile.makePath": "make"
+            }
+        }
+    },
+    "postCreateCommand": "apt-get update && apt-get install -y --no-install-recommends git && rm -rf /var/lib/apt/lists/*"
+}

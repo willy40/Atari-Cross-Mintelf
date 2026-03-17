@@ -1,0 +1,25 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            // DEBUG IN DEVCONTAINER
+            "name": "Debug in Hatari (Container)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/dist/MAIN.TOS",
+            "args": [],
+            "stopAtEntry": true,
+            "cwd": "${workspaceFolder}",
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/opt/cross-mintelf/bin/m68k-atari-mintelf-gdb",
+            "miDebuggerServerAddress": "localhost:2345",
+            "debugServerPath": "/opt/hatari/hatari",
+            "debugServerArgs": "--tos /opt/hatari/etos512us.img --confirm-quit no --sound off --memsize 4 --fast-boot  yes --fast-forward no --fast-forward-key-repeat no --parse /opt/hatari/db.ini ${workspaceFolder}/dist/MAIN.TOS",
+            "serverStarted": "You have entered debug mode.",
+            "filterStderr": true,
+            "serverLaunchTimeout": 30000,
+            "preLaunchTask": "Atari ST: build sequence"
+        }
+    ]
+}

@@ -1,0 +1,15 @@
+{
+    "terminal.integrated.env.linux": {
+        "PATH": "/opt/cross-mintelf/bin:${env:PATH}"
+    },
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "${workspaceFolder}",
+            "binaryPath": "${workspaceFolder}/dist/MAIN.TOS",
+            "binaryArgs": []                           
+        }
+    ],
+    "[m68k]": {
+        "editor.rulers": []
+    }
+}
