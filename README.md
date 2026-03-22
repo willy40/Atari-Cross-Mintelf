@@ -18,3 +18,6 @@ Tested on Wsl2 ubuntu 26.04, in example direcotry run `code .`
 
 Have fun.
 
+## License
+
+This project is licensed under the [MIT License](LICENSE).

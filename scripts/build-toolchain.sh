@@ -6,6 +6,8 @@
 set -e
 set -o pipefail
 
+BUILD_START=$(date +%s)
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INSTALL_DIR="${INSTALL_DIR:-$HOME/toolchains/cross-mintelf}"
 SOURCES_DIR="${SOURCES_DIR:-$SCRIPT_DIR/sources}"
@@ -25,6 +27,7 @@ export PATH="$INSTALL_DIR/bin:$PATH"
 
 log() { echo -e "\n\033[1;32m>>> $*\033[0m\n"; }
 die() { echo -e "\033[1;31mERROR: $*\033[0m" >&2; exit 1; }
+elapsed() { local s=$(( $(date +%s) - BUILD_START )); printf "%02d:%02d" $((s/60)) $((s%60)); }
 
 download_sources() {
     log "STEP 0: downloading sources"
@@ -63,7 +66,7 @@ check_deps() {
     for cmd in gcc g++ make patch tar xz bison flex makeinfo curl; do
         command -v "$cmd" &>/dev/null || missing+=("$cmd")
     done
-    for lib in libmpc-dev libmpfr-dev libgmp-dev libzstd-dev libexpat1-dev; do
+    for lib in libmpc-dev libmpfr-dev libgmp-dev libzstd-dev; do
         dpkg -s "$lib" &>/dev/null 2>&1 || missing+=("$lib")
     done
     [ ${#missing[@]} -eq 0 ] || die "Missing: ${missing[*]}"
@@ -272,22 +275,38 @@ build_gdb() {
     mkdir -p "$bld" && cd "$bld"
 
     ../$src/configure \
+        --host=x86_64-pc-linux-gnu \
         --target=$TARGET \
+        --enable-targets=x86_64-pc-linux-gnu,m68k-atari-mint \
         --prefix="$INSTALL_DIR" \
+        --with-sysroot="$INSTALL_DIR/$TARGET/sys-root" \
         --disable-nls \
-        --with-expat \
-        --with-system-zlib \
         --disable-binutils \
         --disable-gas \
         --disable-gold \
         --disable-ld \
         --disable-sim \
         --disable-gprof \
+        --disable-source-highlight \
+        --disable-threading \
         --disable-tui \
-        --without-curses \
         --disable-werror \
-        CFLAGS="-O2" \
-        CXXFLAGS="-O2"
+        --without-curses \
+        --without-expat \
+        --without-libunwind-ia64 \
+        --without-lzma \
+        --without-babeltrace \
+        --without-intel-pt \
+        --without-xxhash \
+        --without-python \
+        --without-python-libdir \
+        --without-debuginfod \
+        --without-guile \
+        --without-amd-dbgapi \
+        --without-system-readline \
+        CFLAGS="-O2 -D__LIBC_CUSTOM_BINDINGS_H__" \
+        CXXFLAGS="-O2 -D__LIBC_CUSTOM_BINDINGS_H__" \
+        LDFLAGS="-s"
 
     make -j$JOBS all-gdb
     make install-gdb
@@ -309,7 +328,7 @@ case "$STEP" in
         build_libcmini
         build_gemlib
         build_gdb
-        log "Done! Toolchain in $INSTALL_DIR"
+        log "Done! Toolchain in $INSTALL_DIR  [total time: $(elapsed)]"
         ;;
     download)      download_sources ;;
     binutils)      check_deps; build_binutils ;;
