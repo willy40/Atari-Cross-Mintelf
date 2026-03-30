@@ -42,6 +42,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # GCC runtime libs + SDL2/X11 for custom Hatari binary (replaces heavy hatari package)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     make \
+    ca-certificates \
     libmpc3 libmpfr6 libgmp10 \
     libzstd1 zlib1g \
     libsdl2-2.0-0 libpng16-16 libudev1 libx11-6 libreadline8 \

@@ -1,6 +1,6 @@
 {
     "name": "Atari MiNT ELF Toolchain",
-    "image": "atari-mintelf-toolchain:latest",
+    "image": "arekgabrys/atari-mintelf-toolchain:latest",
 
     "mounts": [
         "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind"
